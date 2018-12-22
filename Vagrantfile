@@ -3,8 +3,8 @@
 
 Vagrant.configure("2") do |config|
 
-  config.vm.box = "debian/jessie64"
-  #config.vm.box = "debian/stretch64"
+  #config.vm.box = "debian/jessie64"
+  config.vm.box = "debian/stretch64"
 
   # opensips
   config.vm.define "opensips-dev" do |opensips|
@@ -14,8 +14,8 @@ Vagrant.configure("2") do |config|
   end
 
   config.vm.provider :virtualbox do |vb|
-    vb.customize ["modifyvm", :id, "--memory", 1024]
-    vb.customize ["modifyvm", :id, "--cpus", 2]
+    vb.customize ["modifyvm", :id, "--memory", 512]
+    vb.customize ["modifyvm", :id, "--cpus", 1]
   end
 
   config.vm.provision "ansible" do |ansible|

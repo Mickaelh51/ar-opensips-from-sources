@@ -10,13 +10,16 @@
   when: ansible_distribution == 'Debian' and ansible_distribution_release == 'jessie'
 
 - debug:
-    msg: "Mysql package is {{ mysql_package }} for {{ ansible_distribution }}/{{ ansible_distribution_release }}/{{ ansible_distribution_version }}"
+    msg: "Mysql package is {{ mysql_package }} for {{ ansible_distribution }}/{{ ansible_distribution_version }}"
 
 - name: Install Prerequisites OpenSIPS packages
-  apt:
+  package:
     name: "{{ opensips_packages }}"
-    update_cache: yes
     state: present
+  register: task_result
+  until: task_result is succeeded
+  retries: 10
+  delay: 1
 
 - name: Create OpenSIPS Group
   group: "name={{ opensips_group }} state=present"
