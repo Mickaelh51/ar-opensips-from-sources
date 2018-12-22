@@ -4,6 +4,7 @@
 Vagrant.configure("2") do |config|
 
   config.vm.box = "debian/jessie64"
+  #config.vm.box = "debian/stretch64"
 
   # opensips
   config.vm.define "opensips-dev" do |opensips|
@@ -18,7 +19,7 @@ Vagrant.configure("2") do |config|
   end
 
   config.vm.provision "ansible" do |ansible|
-    ansible.playbook = "main.yml"
+    ansible.playbook = "tests/main.yml"
   end
 
   config.vm.provider "virtualbox" do |vb|
