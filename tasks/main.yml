@@ -1,0 +1,77 @@
+---
+- name: Choose mysql variable for Debian/Sretch
+  set_fact:
+    mysql_package : 'default-libmysqlclient-dev'
+  when: ansible_distribution == 'Debian' and ansible_distribution_release == 'stretch'
+
+- name: Choose mysql variable for Debian/Jessie
+  set_fact:
+    mysql_package : 'libmysqlclient-dev'
+  when: ansible_distribution == 'Debian' and ansible_distribution_release == 'jessie'
+
+- debug:
+    msg: "Mysql package is {{ mysql_package }} for {{ ansible_distribution }}/{{ ansible_distribution_release }}/{{ ansible_distribution_version }}"
+
+- name: Install Prerequisites OpenSIPS packages
+  apt:
+    name: "{{ item }}"
+    update_cache: yes
+    state: present
+  with_items: "{{ opensips_packages }}"
+
+- name: Create OpenSIPS Group
+  group: "name={{ opensips_group }} state=present"
+
+- name: Add OpenSIPS User
+  user: "name={{ opensips_user }} comment='OpenSIPS process user' shell=/sbin/nologin group={{ opensips_group }}"
+
+- name: Git clone OpenSIPS
+  git:
+    repo: https://github.com/OpenSIPS/opensips.git
+    dest: /usr/local/src/opensips-{{ opensips_version }}
+    clone: yes
+    version: "{{ opensips_version }}"
+
+- name: Running make for OpenSIPS
+  command: "{{ item }} chdir=/usr/local/src/opensips-{{ opensips_version }}"
+  with_items:
+    - make prefix=/usr/local include_modules="{{ opensips_modules }}" modules
+    - make prefix=/usr/local include_modules="{{ opensips_modules }}" install
+
+- name: Set ownership on important directories for the OpenSIPS user
+  file: "path={{ item.path }} owner={{ opensips_user }} group={{ opensips_group }} recurse=yes"
+  with_items:
+    - { path: '/usr/local/etc/opensips/' }
+
+- name: Create OpenSIPS service file
+  copy:
+    src: /usr/local/src/opensips-{{ opensips_version }}/packaging/debian/opensips.service
+    dest: "/etc/systemd/system/opensips.service"
+    remote_src: yes
+  notify:
+    - Change Config opensips.service
+
+- name: Create OpenSIPS default file
+  copy:
+    src: /usr/local/src/opensips-{{ opensips_version }}/packaging/debian/opensips.default
+    dest: "/etc/default/opensips"
+    remote_src: yes
+  notify:
+    - Change Config opensips.default
+
+- name: Copy opensips-m4cfg
+  copy:
+    src: /usr/local/src/opensips-{{ opensips_version }}/packaging/debian/opensips-m4cfg
+    dest: "/usr/local/sbin/opensips-m4cfg"
+    mode: 0744
+    remote_src: yes
+  notify:
+    - Change Config opensips-m4cfg
+
+- name: reload systemctl
+  command: systemctl daemon-reload
+
+- debug:
+  msg: "You can start opensips with : service opensips start"
+
+#add start

@@ -1,0 +1,2 @@
+[servers]
+localhost opensips_version="2.4"

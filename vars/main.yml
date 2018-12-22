@@ -1,0 +1,38 @@
+opensips_modules: "carrierroute cgrates compression db_mysql dialplan emergency event_rabbitmq regex identity lua mmgeoip perl rabbitmq proto_sctp proto_tls proto_wss python rest_client siprec snmpstats tls_mgm xml"
+opensips_user: opensips
+opensips_group: opensips
+opensips_version: 2.4
+opensips_packages:
+  -  git
+  -  gcc
+  -  flex
+  -  bison
+  -  make
+  -  libssl-dev
+  -  libcurl4-openssl-dev
+  -  libxml2-dev
+  -  libpcre3-dev
+  -  unixodbc-dev
+  -  vim
+  -  libunistring-dev
+  -  libcurl4-openssl-dev
+  -  libpcre3-dev
+  -  libxmlrpc-core-c3-dev
+  -  libjson-glib-dev
+  -  libpcap0.8-dev
+  -  libbencode-perl
+  -  libconfuse-dev
+  -  libjson-c-dev
+  -  zlib1g-dev
+  - "{{ mysql_package }}"
+  -  libcurl4-openssl-dev
+  -  librabbitmq-dev
+  -  libgeoip-dev
+  -  libperl-dev
+  -  libncurses5-dev
+  -  liblua5.1-0-dev
+  -  libmemcached-dev
+  -  libsctp-dev
+  -  uuid-dev
+  -  libsnmp-dev
+  -  libpython-dev

@@ -1,0 +1,15 @@
+- name: Change Config opensips.service
+  replace:
+    path: "{{ item.path }}"
+    regexp: "{{ item.regexp1 }}"
+    replace: "{{ item.replace }}"
+  with_items:
+    - { path: '/etc/systemd/system/opensips.service', regexp1: '/usr/sbin/opensips-m4cfg', replace: '/usr/local/sbin/opensips-m4cfg'}
+    - { path: '/etc/systemd/system/opensips.service', regexp1: '/usr/sbin/', replace: '/usr/local/sbin/'}
+    - { path: '/etc/systemd/system/opensips.service', regexp1: '/etc/opensips/opensips.cfg', replace: '/usr/local/etc/opensips/opensips.cfg'}
+
+- name: Change Config opensips.default
+  replace: dest=/etc/default/opensips regexp='RUN_OPENSIPS=no' replace='RUN_OPENSIPS=yes'
+
+- name: Change Config opensips-m4cfg
+  replace: dest=/usr/local/sbin/opensips-m4cfg regexp='cfgdir="/etc/\$prog"' replace='cfgdir="/usr/local/etc/$prog"'
