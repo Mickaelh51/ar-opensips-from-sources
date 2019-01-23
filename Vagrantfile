@@ -3,14 +3,14 @@
 
 Vagrant.configure("2") do |config|
 
-  #config.vm.box = "debian/jessie64"
-  config.vm.box = "debian/stretch64"
+  config.vm.box = "debian/jessie64"
+  #config.vm.box = "debian/stretch64"
 
   # opensips
   config.vm.define "opensips-dev" do |opensips|
     opensips.vm.hostname = "opensips-dev"
-    opensips.vm.network :private_network, ip: "10.1.0.224"
-    opensips.vm.network :private_network, ip: "10.1.1.224"
+    opensips.vm.network :private_network, ip: "10.10.0.224"
+    opensips.vm.network :private_network, ip: "10.11.1.224"
   end
 
   config.vm.provider :virtualbox do |vb|
